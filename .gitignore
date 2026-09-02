@@ -1,6 +1,7 @@
 .cursor
 *.env
 *.DS_Store
+EXPERIMENT_DESIGN.md
 .venv/
 __pycache__/
 *.pyc
