@@ -17,7 +17,14 @@ def test_create_task_persists_fields(service: TaskService) -> None:
 
     assert task.title == "one"
     assert task.description == "desc"
+    assert task.priority == "medium"
     assert task.created_at is not None
+
+
+def test_create_task_persists_priority(service: TaskService) -> None:
+    task = service.create_task(title="one", priority="low")
+
+    assert task.priority == "low"
 
 
 def test_get_task_roundtrip(service: TaskService) -> None:

@@ -18,7 +18,10 @@ def test_create_task_contract(client: TestClient) -> None:
     assert "201" in post["responses"]
     request_schema = spec["components"]["schemas"]["TaskCreateRequest"]
     assert "title" in request_schema["required"]
-    assert set(request_schema["properties"].keys()) == {"title", "description"}
+    assert set(request_schema["properties"].keys()) == {"title", "description", "priority"}
+    assert "priority" not in request_schema.get("required", [])
+    assert request_schema["properties"]["priority"]["enum"] == ["low", "medium", "high"]
+    assert request_schema["properties"]["priority"]["default"] == "medium"
 
 
 def test_task_response_contract(client: TestClient) -> None:
@@ -29,9 +32,17 @@ def test_task_response_contract(client: TestClient) -> None:
         "id",
         "title",
         "description",
+        "priority",
         "created_at",
     }
-    assert set(response_schema["required"]) == {"id", "title", "description", "created_at"}
+    assert set(response_schema["required"]) == {
+        "id",
+        "title",
+        "description",
+        "priority",
+        "created_at",
+    }
+    assert response_schema["properties"]["priority"]["enum"] == ["low", "medium", "high"]
 
 
 def test_get_task_documents_404(client: TestClient) -> None:

@@ -2,7 +2,7 @@
 
 import uuid
 
-from app.models import Task
+from app.models import Task, TaskPriority
 from app.repository import TaskRepository
 
 
@@ -16,8 +16,13 @@ class TaskService:
     def __init__(self, repository: TaskRepository) -> None:
         self._repository = repository
 
-    def create_task(self, title: str, description: str | None = None) -> Task:
-        task = Task(id=uuid.uuid4().hex, title=title, description=description)
+    def create_task(
+        self,
+        title: str,
+        description: str | None = None,
+        priority: TaskPriority = "medium",
+    ) -> Task:
+        task = Task(id=uuid.uuid4().hex, title=title, description=description, priority=priority)
         return self._repository.add(task)
 
     def get_task(self, task_id: str) -> Task:

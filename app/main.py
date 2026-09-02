@@ -28,7 +28,11 @@ def create_app(repository: TaskRepository | None = None) -> FastAPI:
         responses={422: {"model": ErrorResponse}},
     )
     async def create_task(payload: TaskCreateRequest) -> TaskResponse:
-        task = service.create_task(title=payload.title, description=payload.description)
+        task = service.create_task(
+            title=payload.title,
+            description=payload.description,
+            priority=payload.priority,
+        )
         return TaskResponse.model_validate(task)
 
     @app.get(

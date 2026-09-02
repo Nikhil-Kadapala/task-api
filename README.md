@@ -45,10 +45,11 @@ uv run mypy app tests          # type check
 
 Creates a task.
 
-- Request body: `{"title": str, "description": str | null}`
+- Request body: `{"title": str, "description": str | null, "priority": "low" | "medium" | "high"}`
 - `title` is required, must be non-blank after trimming, and at most 200
   characters (surrounding whitespace is stripped).
-- Returns `201 Created` with `{"id", "title", "description", "created_at"}`.
+- `priority` is optional and defaults to `"medium"`. Invalid values return `422`.
+- Returns `201 Created` with `{"id", "title", "description", "priority", "created_at"}`.
 - Invalid payloads return `422 Unprocessable Entity`.
 
 ### `GET /tasks/{task_id}`
