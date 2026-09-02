@@ -7,6 +7,9 @@ contract can evolve separately from the domain.
 
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from typing import Literal
+
+TaskPriority = Literal["low", "medium", "high"]
 
 
 @dataclass(frozen=True)
@@ -14,4 +17,5 @@ class Task:
     id: str
     title: str
     description: str | None = None
+    priority: TaskPriority = "medium"
     created_at: datetime = field(default_factory=lambda: datetime.now(UTC))

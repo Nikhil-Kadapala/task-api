@@ -4,12 +4,16 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
+from app.models import TaskPriority
+
 MAX_TITLE_LENGTH = 200
+DEFAULT_PRIORITY: TaskPriority = "medium"
 
 
 class TaskCreateRequest(BaseModel):
     title: str
     description: str | None = None
+    priority: TaskPriority = DEFAULT_PRIORITY
 
     @field_validator("title")
     @classmethod
@@ -28,6 +32,7 @@ class TaskResponse(BaseModel):
     id: str
     title: str
     description: str | None
+    priority: TaskPriority
     created_at: datetime
 
 

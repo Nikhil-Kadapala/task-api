@@ -11,6 +11,7 @@ def test_create_task_returns_201_with_generated_id(client: TestClient) -> None:
     assert body["id"]
     assert body["title"] == "Buy milk"
     assert body["description"] is None
+    assert body["priority"] == "medium"
     assert "created_at" in body
 
 
@@ -44,6 +45,36 @@ def test_create_task_overlong_title_returns_422(client: TestClient) -> None:
     response = client.post("/tasks", json={"title": "x" * 201})
 
     assert response.status_code == 422
+
+
+def test_create_task_with_explicit_priority(client: TestClient) -> None:
+    response = client.post("/tasks", json={"title": "Page on-call", "priority": "high"})
+
+    assert response.status_code == 201
+    assert response.json()["priority"] == "high"
+
+
+def test_create_task_defaults_priority_to_medium(client: TestClient) -> None:
+    response = client.post("/tasks", json={"title": "Nice to have"})
+
+    assert response.status_code == 201
+    assert response.json()["priority"] == "medium"
+
+
+def test_create_task_invalid_priority_returns_422(client: TestClient) -> None:
+    response = client.post("/tasks", json={"title": "Do a thing", "priority": "urgent"})
+
+    assert response.status_code == 422
+
+
+def test_get_task_includes_priority_roundtrip(client: TestClient) -> None:
+    created = client.post("/tasks", json={"title": "Ship hotfix", "priority": "high"}).json()
+
+    response = client.get(f"/tasks/{created['id']}")
+
+    assert response.status_code == 200
+    assert response.json()["priority"] == "high"
+    assert response.json() == created
 
 
 def test_get_task_returns_saved_task(client: TestClient) -> None:
